@@ -10,6 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+// This is an open source tool for converting vtt subtitle files to srt one.
+// Created by Mahmoud Elgindy at 2019
+
 namespace Elgindy_VTT_to_SRT_Converter
 {
     public partial class Form1 : Form
@@ -46,7 +49,7 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            // إضافة الملفات
+            // Add Files
             OpenFileDialog openFileDialog1 = new OpenFileDialog
             {
                 Filter = "WebVTT files (*.vtt)|*.vtt",
@@ -65,7 +68,7 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         private void Button2_Click(object sender, EventArgs e)
         {
-            // إضافة فولدر
+            // Add Folder
             
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -80,21 +83,25 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         private void AddFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // add files from menu
             button1.PerformClick();
         }
 
         private void AddFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // add folder from menu
             button2.PerformClick();
         }
 
         private void RemoveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // remove files from listview1 from menu
             button3.PerformClick();
         }
 
         private void OpenFileContainerToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // open selected file location from menu
             if (listView1.SelectedItems.Count != 0)
             {
                 foreach (ListViewItem opitem in listView1.SelectedItems)
@@ -106,7 +113,7 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         private void Button3_Click(object sender, EventArgs e)
         {
-            // حذف عنصر
+            // remove selected files from listview1
             if (listView1.SelectedItems.Count != 0)
             {
                 foreach (ListViewItem remitem in listView1.SelectedItems)
@@ -119,21 +126,21 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         private void Button4_Click(object sender, EventArgs e)
         {
-            // تفريغ القائمة
+            // Clear listview1
             listView1.Items.Clear();
             groupBox3.Text = "Files: " + listView1.Items.Count.ToString() + " files";
         }
 
         private void Button5_Click(object sender, EventArgs e)
         {
-            // عن
+            // About
             Form2 abt = new Form2();
             abt.ShowDialog();
         }
 
         private void Button6_Click(object sender, EventArgs e)
         {
-            // إضاافة مسار فولدر للحفظ
+            // Add a target folder path for saving converted files
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 savpath = folderBrowserDialog1.SelectedPath;
@@ -144,7 +151,7 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         private void Button7_Click(object sender, EventArgs e)
         {
-            // التحويل
+            // Converting process
             try
             {
                 listView1.Select();
@@ -191,6 +198,7 @@ namespace Elgindy_VTT_to_SRT_Converter
         }
         void ConvertToSrt(string filePathh)
         {
+            // Converting Function
             try
             {
                 using (StreamReader stream = new StreamReader(filePathh))
@@ -243,6 +251,7 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         bool IsTimecode(string line)
         {
+            // Check time line
             return line.Contains("-->");
         }
 
@@ -262,6 +271,7 @@ namespace Elgindy_VTT_to_SRT_Converter
         }
         private void ListView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            // Open selected file location using Double click
             if (listView1.SelectedItems.Count != 0)
             {
                 foreach (ListViewItem opitem in listView1.SelectedItems)
