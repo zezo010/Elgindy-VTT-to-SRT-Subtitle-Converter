@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// This is an open source tool for converting vtt subtitle files to srt one.
+// This is an open source tool for converting webvtt .vtt subtitle files to .srt one.
 // Created by Mahmoud Elgindy at 2019
+// Mahmoud.elgindy87@gmail.com
 
 namespace Elgindy_VTT_to_SRT_Converter
 {
