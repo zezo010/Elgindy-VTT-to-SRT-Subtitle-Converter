@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-
-// This is an open source tool for converting webvtt .vtt subtitle files to .srt one.
-// Created by Mahmoud Elgindy at 2019
-// Mahmoud.elgindy87@gmail.com
 
 namespace Elgindy_VTT_to_SRT_Converter
 {
@@ -78,25 +81,21 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         private void AddFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // add files from menu
             button1.PerformClick();
         }
 
         private void AddFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // add folder from menu
             button2.PerformClick();
         }
 
         private void RemoveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // remove files from listview1 from menu
             button3.PerformClick();
         }
 
         private void OpenFileContainerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // open selected file location from menu
             if (listView1.SelectedItems.Count != 0)
             {
                 foreach (ListViewItem opitem in listView1.SelectedItems)
@@ -108,7 +107,7 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         private void Button3_Click(object sender, EventArgs e)
         {
-            // remove selected files from listview1
+            // Remove Item
             if (listView1.SelectedItems.Count != 0)
             {
                 foreach (ListViewItem remitem in listView1.SelectedItems)
@@ -121,7 +120,7 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         private void Button4_Click(object sender, EventArgs e)
         {
-            // Clear listview1
+            // Clear
             listView1.Items.Clear();
             groupBox3.Text = "Files: " + listView1.Items.Count.ToString() + " files";
         }
@@ -135,7 +134,7 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         private void Button6_Click(object sender, EventArgs e)
         {
-            // Add a target folder path for saving converted files
+            // Add Path to save
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 savpath = folderBrowserDialog1.SelectedPath;
@@ -146,7 +145,7 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         private void Button7_Click(object sender, EventArgs e)
         {
-            // Converting process
+            // Convert
             try
             {
                 listView1.Select();
@@ -193,7 +192,6 @@ namespace Elgindy_VTT_to_SRT_Converter
         }
         void ConvertToSrt(string filePathh)
         {
-            // Converting Function
             try
             {
                 using (StreamReader stream = new StreamReader(filePathh))
@@ -246,8 +244,11 @@ namespace Elgindy_VTT_to_SRT_Converter
 
         bool IsTimecode(string line)
         {
-            // Check time line
             return line.Contains("-->");
+        }
+        bool IsTimecode2(string line)
+        {
+            return line.Contains("->");
         }
 
         string DeleteCueSettings(string line)
@@ -266,7 +267,6 @@ namespace Elgindy_VTT_to_SRT_Converter
         }
         private void ListView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            // Open selected file location using Double click
             if (listView1.SelectedItems.Count != 0)
             {
                 foreach (ListViewItem opitem in listView1.SelectedItems)
@@ -274,6 +274,101 @@ namespace Elgindy_VTT_to_SRT_Converter
                     Process.Start(Path.GetDirectoryName(opitem.SubItems[1].Text));
                 }
             }
+        }
+
+        private void Button8_Click(object sender, EventArgs e)
+        {
+            // time repaire
+            try
+            {
+                listView1.Items.Clear();
+                OpenFileDialog openFileDialog1 = new OpenFileDialog
+                {
+                    Filter = "srt files (*.srt)|*.srt",
+                    //RestoreDirectory = true,
+                    Multiselect = true
+                };
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    foreach (string str in openFileDialog1.FileNames)
+                    {
+                        listView1.Items.Add(new ListViewItem(new string[] { Path.GetFileNameWithoutExtension(str), Path.GetFullPath(str), "" }));
+                    }
+                }
+                groupBox3.Text = "Files: " + listView1.Items.Count.ToString() + " files";
+                foreach (ListViewItem iteem in listView1.Items)
+                {
+                    string srcfilepath2 = iteem.SubItems[1].Text;
+                    string[] lines = File.ReadAllLines(srcfilepath2);
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        if (IsTimecode(lines[i]))
+                        {
+                            string oldline = lines[i];
+                            //MessageBox.Show(oldline);
+                            string newline = oldline.Replace("--> ", "--> 00:");
+                            //MessageBox.Show(newline);
+                            string finalline = newline.Replace(newline, "00:" + newline);
+                            //MessageBox.Show(finalline);
+                            lines[i] = finalline;
+                        }
+                    }
+                    File.WriteAllLines(srcfilepath2, lines);
+                    //using (StreamReader stream = new StreamReader(srcfilepath2))
+                    //{
+                    //    StringBuilder output = new StringBuilder();
+                    //    while (!stream.EndOfStream)
+                    //    {
+                    //        string line = stream.ReadLine();
+                    //        if (IsTimecode(line))
+                    //        {
+                    //            output.AppendLine("00:" + line);
+                    //        }
+                    //    }
+                    //    using (StreamWriter outputFile = new StreamWriter(srcfilepath2 + ".2"))
+                    //        outputFile.Write(output);
+                    //}
+                }
+            }
+            catch { }
+        }
+
+        private void Button9_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                listView1.Items.Clear();
+                if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    var files = Directory.EnumerateFiles(folderBrowserDialog1.SelectedPath, "*.srt", SearchOption.AllDirectories);
+                    foreach (string filename in files)
+                    {
+                        listView1.Items.Add(new ListViewItem(new string[] { Path.GetFileNameWithoutExtension(filename), Path.GetFullPath(filename), "" }));
+                    }
+                }
+                groupBox3.Text = "Files: " + listView1.Items.Count.ToString() + " files";
+                foreach (ListViewItem iteem in listView1.Items)
+                {
+                    string srcfilepath2 = iteem.SubItems[1].Text;
+                    string[] lines = File.ReadAllLines(srcfilepath2);
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        if (IsTimecode2(lines[i]))
+                        {
+                            string oldline = lines[i];
+                            //MessageBox.Show(oldline);
+                            string newline = oldline.Replace(" ", string.Empty);  // لحذف المسافات
+                            //MessageBox.Show(newline);
+                            string finalline = newline.Replace("->", " --> ");
+                            string finalline2 = finalline.Replace('.', ',');
+                            //MessageBox.Show(finalline);
+                            lines[i] = finalline2;
+                        }
+                    }
+                    File.WriteAllLines(srcfilepath2, lines);
+                }
+            }
+            catch { }
         }
     }
 }
