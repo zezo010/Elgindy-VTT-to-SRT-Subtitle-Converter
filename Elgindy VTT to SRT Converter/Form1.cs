@@ -231,9 +231,28 @@ namespace Elgindy_VTT_to_SRT_Converter
                         }
                     }
                     string fileName = destfilename + ".srt";
+                    string finalfilepath = destfilepath + '\\' + fileName;
                     //MessageBox.Show(fileName);
-                    using (StreamWriter outputFile = new StreamWriter(destfilepath + '\\' + fileName))
+                    using (StreamWriter outputFile = new StreamWriter(finalfilepath))
                         outputFile.Write(output);
+                    
+                    // time repaire
+                    string srcfilepath2 = finalfilepath;
+                    string[] lines = File.ReadAllLines(srcfilepath2);
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        if (IsTimecode(lines[i]))
+                        {
+                            string oldline = lines[i];
+                            //MessageBox.Show(oldline);
+                            string newline = oldline.Replace("--> ", "--> 00:");
+                            //MessageBox.Show(newline);
+                            string finalline = newline.Replace(newline, "00:" + newline);
+                            //MessageBox.Show(finalline);
+                            lines[i] = finalline;
+                        }
+                    }
+                    File.WriteAllLines(srcfilepath2, lines);
                 }
             }
             catch (Exception e)
@@ -276,62 +295,62 @@ namespace Elgindy_VTT_to_SRT_Converter
             }
         }
 
-        private void Button8_Click(object sender, EventArgs e)
-        {
-            // time repaire
-            try
-            {
-                listView1.Items.Clear();
-                OpenFileDialog openFileDialog1 = new OpenFileDialog
-                {
-                    Filter = "srt files (*.srt)|*.srt",
-                    //RestoreDirectory = true,
-                    Multiselect = true
-                };
-                if (openFileDialog1.ShowDialog() == DialogResult.OK)
-                {
-                    foreach (string str in openFileDialog1.FileNames)
-                    {
-                        listView1.Items.Add(new ListViewItem(new string[] { Path.GetFileNameWithoutExtension(str), Path.GetFullPath(str), "" }));
-                    }
-                }
-                groupBox3.Text = "Files: " + listView1.Items.Count.ToString() + " files";
-                foreach (ListViewItem iteem in listView1.Items)
-                {
-                    string srcfilepath2 = iteem.SubItems[1].Text;
-                    string[] lines = File.ReadAllLines(srcfilepath2);
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        if (IsTimecode(lines[i]))
-                        {
-                            string oldline = lines[i];
-                            //MessageBox.Show(oldline);
-                            string newline = oldline.Replace("--> ", "--> 00:");
-                            //MessageBox.Show(newline);
-                            string finalline = newline.Replace(newline, "00:" + newline);
-                            //MessageBox.Show(finalline);
-                            lines[i] = finalline;
-                        }
-                    }
-                    File.WriteAllLines(srcfilepath2, lines);
-                    //using (StreamReader stream = new StreamReader(srcfilepath2))
-                    //{
-                    //    StringBuilder output = new StringBuilder();
-                    //    while (!stream.EndOfStream)
-                    //    {
-                    //        string line = stream.ReadLine();
-                    //        if (IsTimecode(line))
-                    //        {
-                    //            output.AppendLine("00:" + line);
-                    //        }
-                    //    }
-                    //    using (StreamWriter outputFile = new StreamWriter(srcfilepath2 + ".2"))
-                    //        outputFile.Write(output);
-                    //}
-                }
-            }
-            catch { }
-        }
+        //private void Button8_Click(object sender, EventArgs e)
+        //{
+        //    // time repaire
+        //    try
+        //    {
+        //        listView1.Items.Clear();
+        //        OpenFileDialog openFileDialog1 = new OpenFileDialog
+        //        {
+        //            Filter = "srt files (*.srt)|*.srt",
+        //            //RestoreDirectory = true,
+        //            Multiselect = true
+        //        };
+        //        if (openFileDialog1.ShowDialog() == DialogResult.OK)
+        //        {
+        //            foreach (string str in openFileDialog1.FileNames)
+        //            {
+        //                listView1.Items.Add(new ListViewItem(new string[] { Path.GetFileNameWithoutExtension(str), Path.GetFullPath(str), "" }));
+        //            }
+        //        }
+        //        groupBox3.Text = "Files: " + listView1.Items.Count.ToString() + " files";
+        //        foreach (ListViewItem iteem in listView1.Items)
+        //        {
+        //            string srcfilepath2 = iteem.SubItems[1].Text;
+        //            string[] lines = File.ReadAllLines(srcfilepath2);
+        //            for (int i = 0; i < lines.Length; i++)
+        //            {
+        //                if (IsTimecode(lines[i]))
+        //                {
+        //                    string oldline = lines[i];
+        //                    //MessageBox.Show(oldline);
+        //                    string newline = oldline.Replace("--> ", "--> 00:");
+        //                    //MessageBox.Show(newline);
+        //                    string finalline = newline.Replace(newline, "00:" + newline);
+        //                    //MessageBox.Show(finalline);
+        //                    lines[i] = finalline;
+        //                }
+        //            }
+        //            File.WriteAllLines(srcfilepath2, lines);
+        //            //using (StreamReader stream = new StreamReader(srcfilepath2))
+        //            //{
+        //            //    StringBuilder output = new StringBuilder();
+        //            //    while (!stream.EndOfStream)
+        //            //    {
+        //            //        string line = stream.ReadLine();
+        //            //        if (IsTimecode(line))
+        //            //        {
+        //            //            output.AppendLine("00:" + line);
+        //            //        }
+        //            //    }
+        //            //    using (StreamWriter outputFile = new StreamWriter(srcfilepath2 + ".2"))
+        //            //        outputFile.Write(output);
+        //            //}
+        //        }
+        //    }
+        //    catch { }
+        //}
 
         private void Button9_Click(object sender, EventArgs e)
         {
