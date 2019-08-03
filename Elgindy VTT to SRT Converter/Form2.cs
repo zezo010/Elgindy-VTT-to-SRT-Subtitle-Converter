@@ -18,6 +18,7 @@ namespace Elgindy_VTT_to_SRT_Converter
         }
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            //Developer
             System.Diagnostics.Process.Start("https://www.linkedin.com/in/elgindy/");
         }
 
