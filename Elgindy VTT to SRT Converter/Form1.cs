@@ -243,34 +243,68 @@ namespace Elgindy_VTT_to_SRT_Converter
                     {
                         if (IsTimecode(lines[i]))
                         {
-                            string oldline = lines[i];
-                            //MessageBox.Show(oldline);
-                            string newline = oldline.Replace("--> ", "--> 00:");
-                            //MessageBox.Show(newline);
-                            string finalline = newline.Replace(newline, "00:" + newline);
-                            //MessageBox.Show(finalline);
-                            lines[i] = finalline;
+                            
+                            string secdtime = lines[i].Substring(lines[i].IndexOf('>') + 2, lines[i].LastIndexOf(",") - (lines[i].IndexOf('>') + 2));
+                            string newline;
+                            string finalline;
+                            try
+                            {
+                                string oldline = lines[i];
+                                
+                                TimeSpan ts = new TimeSpan();
+                                ts = TimeSpan.Parse(secdtime);
+                                
+                                if (secdtime == ts.ToString())
+                                {
+                                    //MessageBox.Show("Equal " + secdtime);
+                                }
+                                else
+                                {
+                                    newline = oldline.Replace("--> ", "--> 00:");
+                                    lines[i] = newline;
+                                    //MessageBox.Show("false " + secdtime);
+                                }
+                                string frsttime = lines[i].Substring(0, lines[i].IndexOf(","));
+                                TimeSpan ts2 = new TimeSpan();
+                                ts2 = TimeSpan.Parse(frsttime);
+                                if (frsttime == ts2.ToString())
+                                {
+                                    //MessageBox.Show("Equal " + secdtime);
+                                }
+                                else
+                                {
+                                    finalline = lines[i].Replace(lines[i], "00:" + lines[i]);
+                                    lines[i] = finalline;
+                                    //MessageBox.Show("false " + secdtime);
+                                    
+                                } 
+                            }
+                            catch (Exception ex)
+                            {
+                                //do something...
+                            }
+                            
                         }
                     }
                     File.WriteAllLines(srcfilepath2, lines);
 
-                    string srcfilepath3 = finalfilepath;
-                    string[] lines2 = File.ReadAllLines(srcfilepath3);
-                    for (int i2 = 0; i2 < lines2.Length; i2++)
-                    {
-                        if (IsTimecode2(lines2[i2]))
-                        {
-                            string oldline = lines2[i2];
-                            //MessageBox.Show(oldline);
-                            string newline = oldline.Replace(" ", string.Empty);  // Remove spaces
-                            //MessageBox.Show(newline);
-                            string finalline = newline.Replace("->", " --> ");
-                            string finalline2 = finalline.Replace('.', ',');
-                            //MessageBox.Show(finalline);
-                            lines2[i2] = finalline2;
-                        }
-                    }
-                    File.WriteAllLines(srcfilepath3, lines2);
+                    //string srcfilepath3 = finalfilepath;
+                    //string[] lines2 = File.ReadAllLines(srcfilepath3);
+                    //for (int i2 = 0; i2 < lines2.Length; i2++)
+                    //{
+                    //    if (IsTimecode2(lines2[i2]))
+                    //    {
+                    //        string oldline = lines2[i2];
+                    //        //MessageBox.Show(oldline);
+                    //        string newline = oldline.Replace(" ", string.Empty);  // Remove spaces
+                    //        //MessageBox.Show(newline);
+                    //        string finalline = newline.Replace("->", " --> ");
+                    //        string finalline2 = finalline.Replace('.', ',');
+                    //        //MessageBox.Show(finalline);
+                    //        lines2[i2] = finalline2;
+                    //    }
+                    //}
+                    //File.WriteAllLines(srcfilepath3, lines2);
                 }
             }
             catch (Exception e)
