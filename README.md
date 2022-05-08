@@ -19,3 +19,6 @@ You can select multiple files or a folder to convert a batch of subtitles at onc
 .Net framework 4.5 && Win 7 SP1, Win 8, Win 8.1, Win 10, Win Server
 
 <b>Download</b> the binary file of this project from : <b><a href="https://github.com/zezo010/Elgindy-VTT-to-SRT-Converter/releases/latest">latest release</a></b>
+
+If you like my work, Please buy me a cup of coffee
+<p align="center"> <a href="https://www.buymeacoffee.com/cryingwolf" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" width="150" ></a></p>
